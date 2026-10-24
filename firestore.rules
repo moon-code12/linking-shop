@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // One profile document per account: users/{uid}
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+
+      // People can only create their own profile, and only as an active seller.
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.role == 'seller'
+        && request.resource.data.status == 'active';
+
+      // Sellers can edit their own profile but never their role or status. Admins can edit anyone.
+      allow update: if isAdmin() || (signedIn() && request.auth.uid == uid
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.status == resource.data.status);
+
+      allow delete: if isAdmin();
+    }
+  }
+}

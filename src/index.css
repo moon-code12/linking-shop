@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #4f46e5;
+}
+
+@layer base {
+  body { @apply bg-slate-50 text-slate-900 antialiased; }
+  button { @apply cursor-pointer; }
+  input { @apply rounded-lg border border-slate-200 bg-white px-3 py-2.5 focus:outline-2 focus:outline-brand; }
+  select { @apply rounded-lg border border-slate-200 bg-white p-2 focus:outline-2 focus:outline-brand; }
+  /* 16px stops iOS Safari from zooming the page when a field is focused */
+  input, select, textarea { font-size: 16px; }
+  img { @apply max-w-full; }
+}
+
+/* Reusable pieces used across several pages */
+@layer components {
+  .btn { @apply inline-block rounded-lg bg-brand px-5 py-3 text-center font-semibold text-white hover:opacity-90; }
+  .btn-block { @apply mt-4 block w-full; }
+  .chip { @apply rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm; }
+  .chip-active { @apply border-brand bg-brand text-white; }
+  .box { @apply rounded-xl border border-slate-200 bg-white; }
+  .wrap { @apply mx-auto max-w-6xl px-4 py-6; }
+  .empty { @apply mx-auto grid max-w-6xl justify-items-center gap-4 px-4 py-16 text-center; }
+  .qty { @apply inline-flex items-center rounded-lg border border-slate-200 bg-white; }
+  .qty button { @apply h-10 w-9 text-lg; }
+  .qty span { @apply min-w-8 text-center; }
+  .product-grid { @apply grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(230px,1fr))] sm:gap-5; }
+}
+
+/* Seller/admin tables: on phones every row becomes a card, using each cell's data-label as its caption. */
+@media (max-width: 767px) {
+  .rtable { display: block; }
+  .rtable thead { display: none; }
+  .rtable tbody { display: block; }
+  .rtable tr { display: grid; gap: 0.15rem; padding: 0.75rem 1rem; }
+  .rtable td { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.2rem 0; }
+  .rtable td:first-child { font-weight: 600; padding-bottom: 0.4rem; }
+  .rtable td[data-label]:not([data-label=""])::before {
+    content: attr(data-label);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #64748b;
+  }
+  .rtable td.rt-full { display: block; padding: 0; }
+}
